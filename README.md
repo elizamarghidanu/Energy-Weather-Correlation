@@ -1,6 +1,6 @@
 # Modelarea și Predicția Consumului de Energie Electrică în Funcție de Factorii Climatici (România)
 
-
+![Overview](docs/screenshots/overview_1.png)
 
 Acest proiect analizează variația consumului de energie electrică (România) în funcție de condițiile meteo și construiește modele de predicție pe date istorice. Pipeline-ul este offline (fără real-time), iar rezultatele sunt prezentate într-un dashboard interactiv (Streamlit).
 
@@ -12,20 +12,25 @@ Acest proiect analizează variația consumului de energie electrică (România) 
 * **Temperatura medie (°C):** 13.0
 * **Precipitații totale (mm):** 2951.3
 
+![Temperatură & precipitații](docs/screenshots/overview_2.png)
+
 ### 2) Observații EDA (Exploratory Data Analysis)
 * Se observă o **sezonalitate clară** atât în consum, cât și în temperatură (pattern anual repetitiv).
 * Relația **temperatură – consum** nu este strict liniară: graficul scatter arată un comportament de tip „U”/curbă (consum mai mare la extreme termice, mai mic la temperaturi moderate), sugerând efecte de încălzire/răcire.
 * Matricea de corelații indică:
   * corelații negative între consum și temperaturile (mean/min/max),
   * corelații mai slabe cu precipitațiile și vântul (dependente de sezon și context).
+ ![Scatter: temperatură vs consum](docs/screenshots/eda_scatter.png)
 
 ### 3) Detecție anomalii (baseline sezonier + z-score robust)
 * Am folosit un **baseline sezonier** definit ca media pe combinația **(month, weekday)**.
+![Detecție anomalii](docs/screenshots/anomalies_1.png)
 * Anomaliile sunt zile cu abateri mari față de baseline, detectate pe **reziduuri** (consum − baseline) și scor robust.
 * La pragul **|z| = 3.5**, au fost detectate **11 anomalii** (vizibile în pagina „Anomalii” din dashboard), care pot corespunde:
   * sărbătorilor/vacanțelor (schimbări de activitate economică),
   * evenimentelor excepționale sau condițiilor meteo atipice,
   * variațiilor operaționale (de ex. patternuri industriale).
+ ![Tabel anomalii](docs/screenshots/anomalies_table.png)
 
 ### 4) Compararea modelelor (evaluare pe ultimul an = 2023)
 Evaluarea s-a făcut pe **test year = 2023**, antrenând pe **2019–2022**. Metricile principale sunt **MAE** și **RMSE** (mai mic = mai bun).
@@ -36,6 +41,7 @@ Evaluarea s-a făcut pe **test year = 2023**, antrenând pe **2019–2022**. Met
 | Baseline (month+weekday mean) | 2023 | 613.1626 | 716.6324 | 365 |
 | LinearRegression | 2023 | 612.5817 | 721.7090 | 365 |
 
+![Compararea modelelor](docs/screenshots/model_comparison.png)
 **Concluzie:** RandomForest are cea mai bună performanță (cel mai mic RMSE și MAE), depășind atât baseline-ul sezonier, cât și regresia liniară.
 
 ### 5) Interpretare (din dashboard)
